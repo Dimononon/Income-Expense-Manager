@@ -26,16 +26,9 @@ namespace Task12.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetIncomeType(Guid id)
         {
-            try
-            {
                 var type = await _incomeTypeService.GetIncomeType(id);
                 var response = new IncomeTypeResponse(type.Id, type.Name, type.LastModified);
                 return Ok(response);
-            }
-            catch (InvalidOperationException)
-            {
-                return BadRequest();
-            }
         }
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpsertIncomeType(Guid id, UpsertIncomeTypeRequest request)
@@ -56,15 +49,8 @@ namespace Task12.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteIncomeType(Guid id)
         {
-            try
-            {
                 await _incomeTypeService.DeleteIncomeType(id);
                 return Ok(id);
-            }
-            catch (InvalidOperationException)
-            {
-                return BadRequest();
-            }
         }
     }
 }

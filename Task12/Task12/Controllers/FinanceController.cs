@@ -36,16 +36,11 @@ namespace Task12.Controllers
         [HttpGet("/expense/{id:guid}")]
         public async Task<IActionResult> GetExpense(Guid id)
         {
-            try
-            {
-                var expense = await _expenseService.GetExpanse(id);
-                var response = new ExpenseResponse(expense.Id, expense.Name, expense.DT, expense.LastModified, expense.ExpenseTypeId, expense.Amount);
-                return Ok(response);
-            }
-            catch (InvalidOperationException)
-            {
-                return BadRequest();
-            }
+
+            var expense = await _expenseService.GetExpanse(id);
+            var response = new ExpenseResponse(expense.Id, expense.Name, expense.DT, expense.LastModified, expense.ExpenseTypeId, expense.Amount);
+            return Ok(response);
+
         }
         [HttpPut("/expense/{id:guid}")]
         public async Task<IActionResult> UpsertExpense(Guid id, UpsertExpenseRequest request)
@@ -53,21 +48,14 @@ namespace Task12.Controllers
             var expense = new FinancialOperation(id, request.Name, request.Amount, request.DateTime, DateTime.UtcNow, Guid.Empty, request.TypeId);
             await _expenseService.UpdateExpense(expense);
 
-            return NoContent();
+            return Ok();
         }
         [HttpDelete("/expense/{id:guid}")]
         public async Task<IActionResult> DeleteExpense(Guid id)
         {
-            try
-            {
-                await _expenseService.DeleteExpense(id);
-                return Ok(id);
+            await _expenseService.DeleteExpense(id);
+            return Ok(id);
 
-            }
-            catch (InvalidOperationException)
-            {
-                return BadRequest();
-            }
         }
 
 
@@ -83,16 +71,9 @@ namespace Task12.Controllers
         [HttpGet("/income/{id:guid}")]
         public async Task<IActionResult> GetIncome(Guid id)
         {
-            try
-            {
-                var income = await _incomeService.GetIncome(id);
-                var response = new IncomeResponse(income.Id, income.Name, income.DT, income.LastModified, income.ExpenseTypeId, income.Amount);
-                return Ok(response);
-            }
-            catch (InvalidOperationException)
-            {
-                return BadRequest();
-            }
+            var income = await _incomeService.GetIncome(id);
+            var response = new IncomeResponse(income.Id, income.Name, income.DT, income.LastModified, income.IncomeTypeId, income.Amount);
+            return Ok(response);
         }
         [HttpPut("/income/{id:guid}")]
         public async Task<IActionResult> UpsertIncome(Guid id, UpsertIncomeRequest request)
@@ -100,21 +81,13 @@ namespace Task12.Controllers
             var income = new FinancialOperation(id, request.Name, request.Amount, request.DateTime, DateTime.UtcNow, request.TypeId, Guid.Empty);
             await _incomeService.UpdateIncome(income);
 
-            return NoContent();
+            return Ok();
         }
         [HttpDelete("/income/{id:guid}")]
         public async Task<IActionResult> DeleteIncome(Guid id)
         {
-            try
-            {
-                await _incomeService.DeleteIncome(id);
-                return Ok(id);
-
-            }
-            catch (InvalidOperationException)
-            {
-                return BadRequest();
-            }
+            await _incomeService.DeleteIncome(id);
+            return Ok(id);
         }
         [HttpGet("/dailyreport")]
         public IActionResult GetDailyReport([FromQuery] DateTime date)

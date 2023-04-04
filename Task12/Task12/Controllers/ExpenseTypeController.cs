@@ -26,16 +26,9 @@ namespace Task12.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetExpenseType(Guid id)
         {
-            try
-            {
-                var type = await _expenseTypeService.GetExpenseType(id);
-                var response = new ExpenseTypeResponse(type.Id, type.Name, type.LastModified);
-                return Ok(response);
-            }
-            catch (InvalidOperationException)
-            {
-                return BadRequest();
-            }
+            var type = await _expenseTypeService.GetExpenseType(id);
+            var response = new ExpenseTypeResponse(type.Id, type.Name, type.LastModified);
+            return Ok(response);
         }
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpsertExpenseType(Guid id, UpsertExpenseTypeRequest request)
@@ -54,15 +47,8 @@ namespace Task12.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteExpenseType(Guid id)
         {
-            try
-            {
-                await _expenseTypeService.DeleteExpenseType(id);
-                return Ok(id);
-            }
-            catch (InvalidOperationException)
-            {
-                return BadRequest();
-            }
+            await _expenseTypeService.DeleteExpenseType(id);
+            return Ok(id);
         }
     }
 }

@@ -46,7 +46,11 @@ namespace Task12.Services.Incomes
 
         public async Task UpdateIncome(FinancialOperation income)
         {
-            _dbContext.FinancialOperations.Update(income);
+            var existingInstance = await _dbContext.Set<FinancialOperation>().FindAsync(income.Id);
+            if (existingInstance != null)
+            {
+                _dbContext.Entry(existingInstance).CurrentValues.SetValues(income);
+            }
             await _dbContext.SaveChangesAsync();
         }
     }

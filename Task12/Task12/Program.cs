@@ -5,6 +5,7 @@ using Task12.Services.ExpenseTypes;
 using Task12.Services.Incomes;
 using Task12.Services.IncomeTypes;
 using Task12.Services.Reports;
+using Task12.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCustomExceptionHandler();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

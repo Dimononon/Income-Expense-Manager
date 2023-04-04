@@ -46,7 +46,11 @@ namespace Task12.Services.Expenses
 
         public async Task UpdateExpense(FinancialOperation expense)
         {
-            _dbContext.FinancialOperations.Update(expense);
+            var existingInstance = await _dbContext.Set<FinancialOperation>().FindAsync(expense.Id);
+            if (existingInstance != null)
+            {
+                _dbContext.Entry(existingInstance).CurrentValues.SetValues(expense);
+            }
             await _dbContext.SaveChangesAsync();
         }
     }
