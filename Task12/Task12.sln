@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{87CA775C-A036-407F-8C63-4CC9BD1A5AEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{8080D342-336E-4A43-A7A9-6A70983A4C60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{8080D342-336E-4A43-A7A9-6A70983A4C60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Task12.Tests", "Task12.Tests\Task12.Tests.csproj", "{0B02BEB0-D31E-4037-855E-6048AB9F7608}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Task12.Tests", "Task12.Tests\Task12.Tests.csproj", "{0B02BEB0-D31E-4037-855E-6048AB9F7608}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorClient", "BlazorClient\BlazorClient.csproj", "{74C132A9-885C-469D-8525-AD668DB3C363}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{0B02BEB0-D31E-4037-855E-6048AB9F7608}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B02BEB0-D31E-4037-855E-6048AB9F7608}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B02BEB0-D31E-4037-855E-6048AB9F7608}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74C132A9-885C-469D-8525-AD668DB3C363}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74C132A9-885C-469D-8525-AD668DB3C363}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74C132A9-885C-469D-8525-AD668DB3C363}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74C132A9-885C-469D-8525-AD668DB3C363}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

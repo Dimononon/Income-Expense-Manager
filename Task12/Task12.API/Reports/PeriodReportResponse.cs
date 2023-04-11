@@ -7,6 +7,6 @@ using Task12.Models;
 
 namespace Task12.API.Reports
 {
-    public record PeriodReportResponse(DateOnly DateStart, DateOnly DateEnd, decimal TotalIncome, decimal TotalExpense, List<FinancialOperation> Operations);
+    public record PeriodReportResponse(DateTime DateStart, DateTime DateEnd, decimal TotalIncome, decimal TotalExpense, List<FinancialOperation> Operations);
     
 }

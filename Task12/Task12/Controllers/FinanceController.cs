@@ -100,7 +100,7 @@ namespace Task12.Controllers
         public IActionResult GetPeriodReport([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd)
         {
             var report = _reportService.GetPeriodReport(DateOnly.FromDateTime(dateStart), DateOnly.FromDateTime(dateEnd));
-            var response = new PeriodReportResponse(report.Date, report.DateEnd, report.TotalIncome, report.TotalExpense, report.Operations);
+            var response = new PeriodReportResponse(DateTime.Parse(report.Date.ToString()), DateTime.Parse(report.DateEnd.ToString()), report.TotalIncome, report.TotalExpense, report.Operations);
             return Ok(response);
         }
 

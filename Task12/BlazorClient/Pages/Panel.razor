@@ -1,0 +1,132 @@
+﻿@page "/panel"
+@using BlazorClient.Models
+@using Microsoft.AspNetCore.Mvc
+@using Task12.API.Reports
+@using BlazorClient.Services;
+@inject IFinanceService financeService;
+@inject IExpenseTypeService expenseTypeService;
+@inject IIncomeTypeService incomeTypeService;
+
+<div class="tabs">
+    <input type="radio" class="tabs__radio" name="tabs-example" id="tab1" checked>
+    <label for="tab1" class="tabs__label">Expense</label>
+    <div class="tabs__content" >
+        <EditForm Model ="@newOperation" OnValidSubmit="CreateOperation">
+            <p>
+                <label for="name">Name</label>
+                <InputText id="name" @bind-Value="newOperation.Name" class="form-control"/>
+            </p>
+            <p>
+                <label for="amount">Amount</label>
+                <InputNumber id="amount" @bind-Value="newOperation.Amount" class="form-control"/>
+            </p>
+            <p>
+                <label for="expenseType">Type</label>
+                <InputSelect id="expenseType" @bind-Value="newOperation.ExpenseTypeId" class="form-control">
+                    @foreach(var expense in expenseTypes)
+                    {
+                        <option value="@expense.Id">@expense.Name</option>
+                    }
+                </InputSelect>
+            </p>
+            <p>
+                <label for="datetime">Date and Time:</label>
+                <input type="datetime-local" id="datetime" name="datetime" @bind-value="newOperation.DT"/>
+            </p>
+        </EditForm>
+        <button type="submit" class="btn-outline-dark">Submit</button>
+    </div>
+    <input type="radio" class="tabs__radio" name="tabs-example" id="tab2">
+    <label for="tab2" class="tabs__label">Income</label>
+    <div class="tabs__content">
+        CONTENT for Tab #2
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h2>Your Balance @balance $</h2>
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Type Name</th>
+                        <th scope="col">Date/Time</th>
+                    </tr>
+                </thead>
+                @foreach (var op in operations)
+                {
+                    <tbody>
+                        <tr>
+                            <td>
+                                @op.Name
+                            </td>
+                            <td>
+                                @op.Amount $
+                            </td>
+                            <td>
+                                @GetType(op)
+                            </td>
+                            <td>
+                                @op.TypeName
+                            </td>
+                            <td>
+                                @op.DT
+                            </td>
+                        </tr>
+                    </tbody>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<FinancialOperationView> operations = new();
+    private decimal balance = 0;
+    private List<ExpenseType> expenseTypes = new();
+    private List<IncomeType> incomeTypes = new();
+    private FinancialOperation newOperation = new();
+    private async Task CreateOperation()
+    {
+        
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        var periodReportResponse = (await financeService.GetPeriodReport(DateTime.Parse("1000-01-01"), DateTime.Parse("9999-01-01")));
+        balance = periodReportResponse.TotalIncome - periodReportResponse.TotalExpense;
+        balance = periodReportResponse.TotalIncome - periodReportResponse.TotalExpense;
+        var ops = periodReportResponse.Operations;
+        foreach (var op in ops)
+        {
+            if (op.ExpenseTypeId == Guid.Empty)
+            {
+                var opview = new FinancialOperationView(op);
+                opview.TypeName = await incomeTypeService.GetIncomeTypeName(op.IncomeTypeId);
+                operations.Add(opview);
+            }
+            else
+            {
+                var opview = new FinancialOperationView(op);
+                opview.TypeName = await expenseTypeService.GetExpenseTypeName(op.ExpenseTypeId);
+                operations.Add(opview);
+            }
+        }
+        operations.Sort((x, y) => y.DT.CompareTo(x.DT));
+    }
+    private string GetType(FinancialOperation op)
+    {
+        if (op.ExpenseTypeId == Guid.Empty)
+        {
+            return "Income";
+        }
+        else
+        {
+            return "Expense";
+        }
+    }
+
+
+}
