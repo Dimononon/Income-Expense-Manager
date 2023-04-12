@@ -56,5 +56,18 @@ namespace Task12.Services.ExpenseTypes
                 throw new InvalidOperationException();
             }
         }
+
+        public List<ExpenseType> GetAllExpenseType()
+        {
+            var types = _dbContext.Expenses.ToList();
+            if (types != null)
+            {
+                return types;
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
+        }
     }
 }

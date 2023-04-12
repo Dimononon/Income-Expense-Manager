@@ -7,11 +7,13 @@ namespace BlazorClient.Services
     public class IncomeTypeService : IIncomeTypeService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "http://localhost:5232";
+        private readonly string _baseUrl;
 
-        public IncomeTypeService(HttpClient httpClient)
+        public IncomeTypeService(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _baseUrl = configuration.GetValue<string>("ApiConnection");
+
         }
         public async Task<IncomeTypeResponse> CreateIncomeType(CreateIncomeTypeRequest request)
         {
@@ -26,7 +28,7 @@ namespace BlazorClient.Services
         public async Task<IncomeTypeResponse> GetIncomeType(Guid id)
         {
             var response = await _httpClient.GetAsync($"{_baseUrl}/IncomeType/{id}");
-            response.EnsureSuccessStatusCode();
+            //response.EnsureSuccessStatusCode();
             var responseString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<IncomeTypeResponse>(responseString);
         }
@@ -47,6 +49,14 @@ namespace BlazorClient.Services
         public async Task<string> GetIncomeTypeName(Guid guid)
         {
             return (await GetIncomeType(guid)).name;
+        }
+
+        public async Task<AllIncomeTypeResponse> GetAllIncomeTypes()
+        {
+            var response = await _httpClient.GetAsync($"{_baseUrl}/IncomeType");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<AllIncomeTypeResponse>(responseString);
         }
     }
 }

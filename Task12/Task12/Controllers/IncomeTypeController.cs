@@ -52,5 +52,12 @@ namespace Task12.Controllers
                 await _incomeTypeService.DeleteIncomeType(id);
                 return Ok(id);
         }
+        [HttpGet()]
+        public async Task<IActionResult> GetAllncomeType()
+        {
+            var allTypes = _incomeTypeService.GetAllIncomeType();
+            var response = new AllIncomeTypeResponse(allTypes);
+            return Ok(response);
+        }
     }
 }

@@ -3,21 +3,24 @@ using System.Text;
 using Task12.API.Expenses;
 using Task12.API.Incomes;
 using Task12.API.Reports;
+using Task12.Models;
 
 namespace BlazorClient.Services
 {
     public class FinanceService : IFinanceService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "http://localhost:5232";
+        private readonly string _baseUrl;
 
-        public FinanceService(HttpClient httpClient)
+        public FinanceService(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _baseUrl = configuration.GetValue<string>("ApiConnection");
         }
 
-        public async Task<ExpenseResponse> CreateExpense(CreateExpenseRequest request)
+        public async Task<ExpenseResponse> CreateExpense(FinancialOperation model)
         {
+            var request = new CreateExpenseRequest(model.Name, model.DT, model.ExpenseTypeId, model.Amount);
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync($"{_baseUrl}/expense", content);
@@ -34,8 +37,9 @@ namespace BlazorClient.Services
             return JsonConvert.DeserializeObject<ExpenseResponse>(responseString);
         }
 
-        public async Task UpdateExpense(Guid id, UpsertExpenseRequest request)
+        public async Task UpdateExpense(Guid id, FinancialOperation model)
         {
+            var request = new UpsertExpenseRequest(model.Name, model.DT, DateTime.UtcNow, model.ExpenseTypeId, model.Amount);
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"{_baseUrl}/expense/{id}", content);
@@ -48,8 +52,9 @@ namespace BlazorClient.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<IncomeResponse> CreateIncome(CreateIncomeRequest request)
+        public async Task<IncomeResponse> CreateIncome(FinancialOperation model)
         {
+            var request = new CreateIncomeRequest(model.Name, model.DT, model.IncomeTypeId, model.Amount);
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync($"{_baseUrl}/income", content);
@@ -66,8 +71,9 @@ namespace BlazorClient.Services
             return JsonConvert.DeserializeObject<IncomeResponse>(responseString);
         }
 
-        public async Task UpdateIncome(Guid id, UpsertIncomeRequest request)
+        public async Task UpdateIncome(Guid id, FinancialOperation model)
         {
+            var request = new UpsertIncomeRequest(model.Name, model.DT, DateTime.UtcNow, model.IncomeTypeId, model.Amount);
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"{_baseUrl}/income/{id}", content);

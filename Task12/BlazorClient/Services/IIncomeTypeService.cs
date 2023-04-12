@@ -9,5 +9,6 @@ namespace BlazorClient.Services
         Task<string> GetIncomeTypeName(Guid guid);
         Task<IncomeTypeResponse> GetIncomeType(Guid id);
         Task UpdateIncomeType(Guid id, UpsertIncomeTypeRequest request);
+        Task<AllIncomeTypeResponse> GetAllIncomeTypes();
     }
 }

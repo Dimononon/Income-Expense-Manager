@@ -8,11 +8,16 @@ namespace Task12.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
+        [Required(ErrorMessage ="Please input name of operation")]
         public string Name { get; set; }
+        [Required(ErrorMessage ="Please input amount")]
         public decimal Amount { get; set; }
+        [Required(ErrorMessage ="Please input date and time operation")]
         public DateTime DT { get; set; }
         public DateTime LastModified { get; set;}
+        [Required]
         public Guid IncomeTypeId { get; set;  }
+        [Required]
         public Guid ExpenseTypeId { get; set;  }
         public FinancialOperation()
         {

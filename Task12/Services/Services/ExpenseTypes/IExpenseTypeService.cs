@@ -8,5 +8,6 @@ namespace Task12.Services.ExpenseTypes
         Task DeleteExpenseType(Guid id);
         Task<ExpenseType> GetExpenseType(Guid id);
         Task<bool> UpdateExpenseType(ExpenseType expenseType);
+        List<ExpenseType> GetAllExpenseType();
     }
 }

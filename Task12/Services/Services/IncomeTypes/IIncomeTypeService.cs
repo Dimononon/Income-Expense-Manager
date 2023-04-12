@@ -8,5 +8,6 @@ namespace Task12.Services.IncomeTypes
         Task DeleteIncomeType(Guid id);
         Task<IncomeType> GetIncomeType(Guid id);
         Task<bool> UpdateIncomeType(IncomeType incomeType);
+        List<IncomeType> GetAllIncomeType();
     }
 }

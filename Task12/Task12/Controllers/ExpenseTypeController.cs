@@ -50,5 +50,12 @@ namespace Task12.Controllers
             await _expenseTypeService.DeleteExpenseType(id);
             return Ok(id);
         }
+        [HttpGet()]
+        public async Task<IActionResult> GetAllExpenseType()
+        {
+            var allTypes = _expenseTypeService.GetAllExpenseType();
+            var response = new AllExpenseTypeResponse(allTypes);
+            return Ok(response);
+        }
     }
 }

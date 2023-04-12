@@ -56,5 +56,17 @@ namespace Task12.Services.IncomeTypes
                 throw new InvalidOperationException();
             }
         }
+        public List<IncomeType> GetAllIncomeType()
+        {
+            var types = _dbContext.Incomes.ToList();
+            if (types != null)
+            {
+                return types;
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
+        }
     }
 }

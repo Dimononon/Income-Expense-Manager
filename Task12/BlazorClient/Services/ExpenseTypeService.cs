@@ -7,11 +7,12 @@ namespace BlazorClient.Services
     public class ExpenseTypeService : IExpenseTypeService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "http://localhost:5232";
+        private readonly string _baseUrl;
 
-        public ExpenseTypeService(HttpClient httpClient)
+        public ExpenseTypeService(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _baseUrl = configuration.GetValue<string>("ApiConnection");
         }
         public async Task<ExpenseTypeResponse> CreateExpenseType(CreateExpenseTypeRequest request)
         {
@@ -48,6 +49,13 @@ namespace BlazorClient.Services
         {
             return (await GetExpenseType(guid)).Name;
         }
-        
+
+        public async Task<AllExpenseTypeResponse> GetAllExpenseTypes()
+        {
+            var response = await _httpClient.GetAsync($"{_baseUrl}/ExpenseType");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<AllExpenseTypeResponse>(responseString);
+        }
     }
 }

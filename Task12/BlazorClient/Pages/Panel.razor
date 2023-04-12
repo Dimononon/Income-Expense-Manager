@@ -8,38 +8,65 @@
 @inject IIncomeTypeService incomeTypeService;
 
 <div class="tabs">
-    <input type="radio" class="tabs__radio" name="tabs-example" id="tab1" checked>
+    <input type="radio" class="tabs__radio" name="tabs-example" id="tab1" checked="@IsExpenseChecked" @onchange="() => { IsExpenseChecked = true; IsIncomeChecked = false; }">
     <label for="tab1" class="tabs__label">Expense</label>
-    <div class="tabs__content" >
-        <EditForm Model ="@newOperation" OnValidSubmit="CreateOperation">
-            <p>
+    <div class="tabs__content">
+        <EditForm Model="@expenseOperation" OnValidSubmit="CreateExpenseOperation">
+            <DataAnnotationsValidator />
+            <div>
                 <label for="name">Name</label>
-                <InputText id="name" @bind-Value="newOperation.Name" class="form-control"/>
-            </p>
-            <p>
+                <InputText id="name" @bind-Value="expenseOperation.Name" class="form-control" />
+            </div>
+            <div>
                 <label for="amount">Amount</label>
-                <InputNumber id="amount" @bind-Value="newOperation.Amount" class="form-control"/>
-            </p>
-            <p>
+                <InputNumber id="amount" @bind-Value="expenseOperation.Amount" class="form-control" />
+            </div>
+            <div>
                 <label for="expenseType">Type</label>
-                <InputSelect id="expenseType" @bind-Value="newOperation.ExpenseTypeId" class="form-control">
-                    @foreach(var expense in expenseTypes)
+                <InputSelect id="expenseType" @bind-Value="expenseOperation.ExpenseTypeId" class="form-control">
+                    @foreach (var expense in expenseTypes)
                     {
                         <option value="@expense.Id">@expense.Name</option>
                     }
                 </InputSelect>
-            </p>
-            <p>
+            </div>
+            <div>
                 <label for="datetime">Date and Time:</label>
-                <input type="datetime-local" id="datetime" name="datetime" @bind-value="newOperation.DT"/>
-            </p>
+                <input type="datetime-local" id="datetime" name="datetime" @bind-value="expenseOperation.DT" class="form-control" />
+            </div>
+            <ValidationSummary />
+            <button type="submit" class="btn-outline-dark">Submit</button>
         </EditForm>
-        <button type="submit" class="btn-outline-dark">Submit</button>
     </div>
-    <input type="radio" class="tabs__radio" name="tabs-example" id="tab2">
+    <input type="radio" class="tabs__radio" name="tabs-example" id="tab2" checked="@IsIncomeChecked" @onchange="() => { IsExpenseChecked = false; IsIncomeChecked = true; }">
     <label for="tab2" class="tabs__label">Income</label>
     <div class="tabs__content">
-        CONTENT for Tab #2
+        <EditForm Model="@incomeOperation" OnValidSubmit="CreateIncomeOperation">
+            <DataAnnotationsValidator />
+            <div>
+                <label for="name">Name</label>
+                <InputText id="name" @bind-Value="incomeOperation.Name" class="form-control" />
+            </div>
+            <div>
+                <label for="amount">Amount</label>
+                <InputNumber id="amount" @bind-Value="incomeOperation.Amount" class="form-control" />
+            </div>
+            <div>
+                <label for="incomeType">Type</label>
+                <InputSelect id="incomeType" @bind-Value="incomeOperation.IncomeTypeId" class="form-control">
+                    @foreach (var income in incomeTypes)
+                    {
+                        <option value="@income.Id">@income.Name</option>
+                    }
+                </InputSelect>
+            </div>
+            <div>
+                <label for="datetime">Date and Time:</label>
+                <input type="datetime-local" id="datetime" name="datetime" @bind-value="incomeOperation.DT" class="form-control" />
+            </div>
+            <ValidationSummary />
+            <button type="submit" class="btn-outline-dark">Submit</button>
+        </EditForm>
     </div>
 </div>
 <div class="container-fluid">
@@ -54,6 +81,8 @@
                         <th scope="col">Type</th>
                         <th scope="col">Type Name</th>
                         <th scope="col">Date/Time</th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 @foreach (var op in operations)
@@ -75,6 +104,12 @@
                             <td>
                                 @op.DT
                             </td>
+                            <td width="50px">
+                                <button class="btn btn-outline-dark" @onclick="(()=> EditOperation(op.Id, op.IncomeTypeId==Guid.Empty))">Edit</button>
+                            </td>
+                            <td width="50px">
+                                <button class="btn btn-outline-dark" @onclick="(()=> DeleteOperation(op.Id, op.IncomeTypeId==Guid.Empty))">Del</button>
+                            </td>
                         </tr>
                     </tbody>
                 }
@@ -84,17 +119,56 @@
 </div>
 
 @code {
+    private bool IsExpenseChecked = true;
+    private bool IsIncomeChecked = false;
+    private bool isNewExpense = true;
+    private bool isNewIncome = true;
     private List<FinancialOperationView> operations = new();
     private decimal balance = 0;
     private List<ExpenseType> expenseTypes = new();
     private List<IncomeType> incomeTypes = new();
-    private FinancialOperation newOperation = new();
-    private async Task CreateOperation()
+    private FinancialOperation expenseOperation = new();
+    private FinancialOperation incomeOperation = new();
+    private async Task CreateExpenseOperation()
     {
-        
+        if (isNewExpense)
+        {
+            await financeService.CreateExpense(expenseOperation);
+            await GetFinancialOperations();
+        }
+        else
+        {
+            await financeService.UpdateExpense(expenseOperation.Id, expenseOperation);
+            isNewExpense = true;
+            await GetFinancialOperations();
+        }
+        DefaultOperation();
+    }
+    private async Task CreateIncomeOperation()
+    {
+        if (isNewIncome)
+        {
+            await financeService.CreateIncome(incomeOperation);
+            await GetFinancialOperations();
+        }
+        else
+        {
+            await financeService.UpdateIncome(incomeOperation.Id, incomeOperation);
+            isNewIncome = true;
+            await GetFinancialOperations();
+        }
+        DefaultOperation();
     }
     protected override async Task OnInitializedAsync()
     {
+        await GetFinancialOperations();
+        expenseTypes = (await expenseTypeService.GetAllExpenseTypes()).ExpenseTypes;
+        incomeTypes = (await incomeTypeService.GetAllIncomeTypes()).IncomeTypes;
+        DefaultOperation();
+    }
+    private async Task GetFinancialOperations()
+    {
+        operations.Clear();
         var periodReportResponse = (await financeService.GetPeriodReport(DateTime.Parse("1000-01-01"), DateTime.Parse("9999-01-01")));
         balance = periodReportResponse.TotalIncome - periodReportResponse.TotalExpense;
         balance = periodReportResponse.TotalIncome - periodReportResponse.TotalExpense;
@@ -127,6 +201,51 @@
             return "Expense";
         }
     }
-
+    private void DefaultOperation()
+    {
+        expenseOperation = new FinancialOperation()
+            {
+                DT = DateTime.UtcNow,
+                Amount = 0,
+                IncomeTypeId = Guid.Empty,
+                ExpenseTypeId = expenseTypes.First().Id
+            };
+        incomeOperation = new FinancialOperation()
+            {
+                DT = DateTime.UtcNow,
+                Amount = 0,
+                IncomeTypeId = incomeTypes.First().Id,
+                ExpenseTypeId = Guid.Empty
+            };
+    }
+    private async Task EditOperation(Guid guid, bool isExpense)
+    {
+        if (isExpense)
+        {
+            isNewExpense = false;
+            var response = await financeService.GetExpense(guid);
+            expenseOperation = new(response.Id, response.Name, response.Amount, response.DateTime, response.LastModified, Guid.Empty, response.TypeId);
+            IsExpenseChecked = true;
+        }
+        else
+        {
+            isNewIncome = false;
+            var response = await financeService.GetIncome(guid);
+            incomeOperation = new(response.id, response.Name, response.Amount, response.DateTime, response.LastModified, response.TypeId, Guid.Empty);
+            IsIncomeChecked = true;
+        }
+    }
+    private async Task DeleteOperation(Guid guid, bool isExpense)
+    {
+        if (isExpense)
+        {
+            await financeService.DeleteExpense(guid);
+        }
+        else
+        {
+            await financeService.DeleteIncome(guid);
+        }
+        await GetFinancialOperations();
+    }
 
 }

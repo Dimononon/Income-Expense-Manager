@@ -9,5 +9,6 @@ namespace BlazorClient.Services
         Task<ExpenseTypeResponse> GetExpenseType(Guid id);
         Task UpdateExpenseType(Guid id, UpsertExpenseTypeRequest request);
         Task<string> GetExpenseTypeName(Guid guid);
+        Task<AllExpenseTypeResponse> GetAllExpenseTypes();
     }
 }

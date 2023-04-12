@@ -2,6 +2,8 @@ using BlazorClient.Data;
 using BlazorClient.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System.Configuration;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,7 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<IFinanceService, FinanceService>();
 builder.Services.AddSingleton<IExpenseTypeService, ExpenseTypeService>();
 builder.Services.AddSingleton<IIncomeTypeService, IncomeTypeService>();
+//builder.Services.AddSingleton<IConfiguration, Configuration>();
 builder.Services.AddHttpClient();
 
 var app = builder.Build();
