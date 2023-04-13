@@ -27,9 +27,9 @@ namespace Task12.Controllers
         [HttpPost("/expense")]
         public async Task<IActionResult> CreateExpense(CreateExpenseRequest request)
         {
-            var expense = new FinancialOperation(Guid.NewGuid(), request.Name, request.Amount, request.DateTime, DateTime.UtcNow, Guid.Empty, request.TypeId);
+            var expense = new FinancialOperation(Guid.NewGuid(), request.Name, request.Amount, request.DateTime, DateTime.UtcNow, Guid.Empty, request.TypeId, OperationType.Expense);
             await _expenseService.CreateExpense(expense);
-            var response = new ExpenseResponse(expense.Id, expense.Name, expense.DT, expense.LastModified, expense.ExpenseTypeId, expense.Amount);
+            var response = new ExpenseResponse(expense.Id, expense.Name, expense.DT, expense.LastModified, expense.ExpenseTypeId, expense.Amount, expense.OpType);
 
             return CreatedAtAction(nameof(GetExpense), new { id = expense.Id }, response);
         }
@@ -38,14 +38,14 @@ namespace Task12.Controllers
         {
 
             var expense = await _expenseService.GetExpanse(id);
-            var response = new ExpenseResponse(expense.Id, expense.Name, expense.DT, expense.LastModified, expense.ExpenseTypeId, expense.Amount);
+            var response = new ExpenseResponse(expense.Id, expense.Name, expense.DT, expense.LastModified, expense.ExpenseTypeId, expense.Amount, expense.OpType);
             return Ok(response);
 
         }
         [HttpPut("/expense/{id:guid}")]
         public async Task<IActionResult> UpsertExpense(Guid id, UpsertExpenseRequest request)
         {
-            var expense = new FinancialOperation(id, request.Name, request.Amount, request.DateTime, DateTime.UtcNow, Guid.Empty, request.TypeId);
+            var expense = new FinancialOperation(id, request.Name, request.Amount, request.DateTime, DateTime.UtcNow, Guid.Empty, request.TypeId, OperationType.Expense);
             await _expenseService.UpdateExpense(expense);
 
             return Ok();
@@ -62,9 +62,9 @@ namespace Task12.Controllers
         [HttpPost("/income")]
         public async Task<IActionResult> CreateIncome(CreateIncomeRequest request)
         {
-            var income = new FinancialOperation(Guid.NewGuid(), request.Name, request.Amount, request.DateTime, DateTime.UtcNow, request.TypeId, Guid.Empty);
+            var income = new FinancialOperation(Guid.NewGuid(), request.Name, request.Amount, request.DateTime, DateTime.UtcNow, request.TypeId, Guid.Empty, OperationType.Income);
             await _incomeService.CreateIncome(income);
-            var response = new IncomeResponse(income.Id, income.Name, income.DT, income.LastModified, income.ExpenseTypeId, income.Amount);
+            var response = new IncomeResponse(income.Id, income.Name, income.DT, income.LastModified, income.ExpenseTypeId, income.Amount, income.OpType);
 
             return CreatedAtAction(nameof(GetIncome), new { id = income.Id }, response);
         }
@@ -72,13 +72,13 @@ namespace Task12.Controllers
         public async Task<IActionResult> GetIncome(Guid id)
         {
             var income = await _incomeService.GetIncome(id);
-            var response = new IncomeResponse(income.Id, income.Name, income.DT, income.LastModified, income.IncomeTypeId, income.Amount);
+            var response = new IncomeResponse(income.Id, income.Name, income.DT, income.LastModified, income.IncomeTypeId, income.Amount,income.OpType);
             return Ok(response);
         }
         [HttpPut("/income/{id:guid}")]
         public async Task<IActionResult> UpsertIncome(Guid id, UpsertIncomeRequest request)
         {
-            var income = new FinancialOperation(id, request.Name, request.Amount, request.DateTime, DateTime.UtcNow, request.TypeId, Guid.Empty);
+            var income = new FinancialOperation(id, request.Name, request.Amount, request.DateTime, DateTime.UtcNow, request.TypeId, Guid.Empty, OperationType.Income);
             await _incomeService.UpdateIncome(income);
 
             return Ok();

@@ -40,7 +40,7 @@ namespace Task12.Tests
             Guid typeId = Guid.NewGuid();
             CreateExpenseRequest request = new("test", DateTime.MinValue, typeId, 12.5m);
             CreatedAtActionResult response = (CreatedAtActionResult)await _financeController.CreateExpense(request);
-            var expected = new ExpenseResponse(Guid.Empty, "test", DateTime.MinValue, DateTime.UtcNow, typeId, 12.5m);
+            var expected = new ExpenseResponse(Guid.Empty, "test", DateTime.MinValue, DateTime.UtcNow, typeId, 12.5m, OperationType.Expense);
             if (response.StatusCode == 201)
             {
                 var actual = (ExpenseResponse)response.Value;
@@ -61,12 +61,12 @@ namespace Task12.Tests
             Guid typeId = Guid.NewGuid();
             Guid typeId2 = Guid.NewGuid();
             DateTime dateTime = DateTime.UtcNow;
-            FinancialOperation financialOperation = new FinancialOperation(typeId, "test", 12.5m, dateTime, dateTime, Guid.Empty, typeId2);
+            FinancialOperation financialOperation = new FinancialOperation(typeId, "test", 12.5m, dateTime, dateTime, Guid.Empty, typeId2, OperationType.Expense);
             await _appDBContext.FinancialOperations.AddAsync(financialOperation);
             await _appDBContext.SaveChangesAsync();
 
             OkObjectResult response = (OkObjectResult)await _financeController.GetExpense(typeId);
-            var expected = new ExpenseResponse(typeId, "test", dateTime, dateTime, typeId2, 12.5m);
+            var expected = new ExpenseResponse(typeId, "test", dateTime, dateTime, typeId2, 12.5m, OperationType.Expense);
             Assert.Multiple(() =>
             {
                 Assert.That(response.StatusCode, Is.EqualTo(200));
@@ -79,8 +79,8 @@ namespace Task12.Tests
             Guid typeId = Guid.NewGuid();
             Guid typeId2 = Guid.NewGuid();
             DateTime dateTime = DateTime.UtcNow;
-            FinancialOperation financialOperation = new FinancialOperation(typeId, "test", 12.5m, dateTime, dateTime, Guid.Empty, typeId2);
-            FinancialOperation financialOperation2 = new FinancialOperation(typeId, "test2", 13, dateTime, dateTime, Guid.Empty, typeId2);
+            FinancialOperation financialOperation = new FinancialOperation(typeId, "test", 12.5m, dateTime, dateTime, Guid.Empty, typeId2, OperationType.Expense);
+            FinancialOperation financialOperation2 = new FinancialOperation(typeId, "test2", 13, dateTime, dateTime, Guid.Empty, typeId2, OperationType.Expense);
             await _appDBContext.FinancialOperations.AddAsync(financialOperation);
             await _appDBContext.SaveChangesAsync();
             var request = new UpsertExpenseRequest("test2", dateTime, dateTime, typeId2, 13);
@@ -103,7 +103,7 @@ namespace Task12.Tests
             Guid typeId = Guid.NewGuid();
             Guid typeId2 = Guid.NewGuid();
             DateTime dateTime = DateTime.UtcNow;
-            FinancialOperation financialOperation = new FinancialOperation(typeId, "test", 12.5m, dateTime, dateTime, Guid.Empty, typeId2);
+            FinancialOperation financialOperation = new FinancialOperation(typeId, "test", 12.5m, dateTime, dateTime, Guid.Empty, typeId2, OperationType.Expense);
             await _appDBContext.FinancialOperations.AddAsync(financialOperation);
             await _appDBContext.SaveChangesAsync();
 
@@ -122,7 +122,7 @@ namespace Task12.Tests
             Guid typeId = Guid.NewGuid();
             CreateIncomeRequest request = new("test", DateTime.MinValue, typeId, 12.5m);
             CreatedAtActionResult response = (CreatedAtActionResult)await _financeController.CreateIncome(request);
-            var expected = new IncomeResponse(Guid.Empty, "test", DateTime.MinValue, DateTime.UtcNow, typeId, 12.5m);
+            var expected = new IncomeResponse(Guid.Empty, "test", DateTime.MinValue, DateTime.UtcNow, typeId, 12.5m, OperationType.Income);
             if (response.StatusCode == 201)
             {
                 var actual = (IncomeResponse)response.Value;
@@ -143,12 +143,12 @@ namespace Task12.Tests
             Guid typeId = Guid.NewGuid();
             Guid typeId2 = Guid.NewGuid();
             DateTime dateTime = DateTime.UtcNow;
-            FinancialOperation financialOperation = new FinancialOperation(typeId, "test", 12.5m, dateTime, dateTime,  typeId2,Guid.Empty);
+            FinancialOperation financialOperation = new FinancialOperation(typeId, "test", 12.5m, dateTime, dateTime,  typeId2,Guid.Empty, OperationType.Income);
             await _appDBContext.FinancialOperations.AddAsync(financialOperation);
             await _appDBContext.SaveChangesAsync();
 
             OkObjectResult response = (OkObjectResult)await _financeController.GetIncome(typeId);
-            var expected = new IncomeResponse(typeId, "test", dateTime, dateTime, typeId2, 12.5m);
+            var expected = new IncomeResponse(typeId, "test", dateTime, dateTime, typeId2, 12.5m, OperationType.Income);
             Assert.Multiple(() =>
             {
                 Assert.That(response.StatusCode, Is.EqualTo(200));
@@ -161,8 +161,8 @@ namespace Task12.Tests
             Guid typeId = Guid.NewGuid();
             Guid typeId2 = Guid.NewGuid();
             DateTime dateTime = DateTime.UtcNow;
-            FinancialOperation financialOperation = new FinancialOperation(typeId, "test", 12.5m, dateTime, dateTime,  typeId2, Guid.Empty);
-            FinancialOperation financialOperation2 = new FinancialOperation(typeId, "test2", 13, dateTime, dateTime, typeId2, Guid.Empty);
+            FinancialOperation financialOperation = new FinancialOperation(typeId, "test", 12.5m, dateTime, dateTime,  typeId2, Guid.Empty, OperationType.Income);
+            FinancialOperation financialOperation2 = new FinancialOperation(typeId, "test2", 13, dateTime, dateTime, typeId2, Guid.Empty, OperationType.Income);
             await _appDBContext.FinancialOperations.AddAsync(financialOperation);
             await _appDBContext.SaveChangesAsync();
             var request = new UpsertIncomeRequest("test2", dateTime, dateTime, typeId2, 13);
@@ -185,7 +185,7 @@ namespace Task12.Tests
             Guid typeId = Guid.NewGuid();
             Guid typeId2 = Guid.NewGuid();
             DateTime dateTime = DateTime.UtcNow;
-            FinancialOperation financialOperation = new FinancialOperation(typeId, "test", 12.5m, dateTime, dateTime, Guid.Empty, typeId2);
+            FinancialOperation financialOperation = new FinancialOperation(typeId, "test", 12.5m, dateTime, dateTime, Guid.Empty, typeId2, OperationType.Income);
             await _appDBContext.FinancialOperations.AddAsync(financialOperation);
             await _appDBContext.SaveChangesAsync();
 
@@ -202,10 +202,10 @@ namespace Task12.Tests
         {
             Guid typeId2 = Guid.NewGuid();
             DateTime dateTime = DateTime.UtcNow;
-            FinancialOperation financialOperation = new FinancialOperation(Guid.NewGuid(), "test", 12.5m, dateTime, dateTime, Guid.Empty, typeId2);
-            FinancialOperation financialOperation2 = new FinancialOperation(Guid.NewGuid(), "test2", 15, dateTime, dateTime, Guid.Empty, typeId2);
-            FinancialOperation financialOperation3 = new FinancialOperation(Guid.NewGuid(), "test3", 14, dateTime, dateTime,  typeId2, Guid.Empty);
-            FinancialOperation financialOperation4 = new FinancialOperation(Guid.NewGuid(), "test4", 2, DateTime.MinValue, dateTime,  typeId2, Guid.Empty);
+            FinancialOperation financialOperation = new FinancialOperation(Guid.NewGuid(), "test", 12.5m, dateTime, dateTime, Guid.Empty, typeId2, OperationType.Expense);
+            FinancialOperation financialOperation2 = new FinancialOperation(Guid.NewGuid(), "test2", 15, dateTime, dateTime, Guid.Empty, typeId2, OperationType.Expense);
+            FinancialOperation financialOperation3 = new FinancialOperation(Guid.NewGuid(), "test3", 14, dateTime, dateTime,  typeId2, Guid.Empty, OperationType.Income);
+            FinancialOperation financialOperation4 = new FinancialOperation(Guid.NewGuid(), "test4", 2, DateTime.MinValue, dateTime,  typeId2, Guid.Empty, OperationType.Income);
             await _appDBContext.FinancialOperations.AddRangeAsync(financialOperation, financialOperation2,financialOperation3,financialOperation4);
             await _appDBContext.SaveChangesAsync();
 
@@ -223,10 +223,10 @@ namespace Task12.Tests
         {
             Guid typeId2 = Guid.NewGuid();
             DateTime dateTime = DateTime.UtcNow;
-            FinancialOperation financialOperation = new FinancialOperation(Guid.NewGuid(), "test", 12.5m, DateTime.Parse("2023-04-01"), dateTime, Guid.Empty, typeId2);
-            FinancialOperation financialOperation2 = new FinancialOperation(Guid.NewGuid(), "test2", 15, DateTime.Parse("2023-04-15"), dateTime, Guid.Empty, typeId2);
-            FinancialOperation financialOperation3 = new FinancialOperation(Guid.NewGuid(), "test3", 14, DateTime.Parse("2023-04-30"), dateTime, typeId2, Guid.Empty);
-            FinancialOperation financialOperation4 = new FinancialOperation(Guid.NewGuid(), "test4", 2, DateTime.Parse("2023-05-01"), dateTime, typeId2, Guid.Empty);
+            FinancialOperation financialOperation = new FinancialOperation(Guid.NewGuid(), "test", 12.5m, DateTime.Parse("2023-04-01"), dateTime, Guid.Empty, typeId2, OperationType.Expense);
+            FinancialOperation financialOperation2 = new FinancialOperation(Guid.NewGuid(), "test2", 15, DateTime.Parse("2023-04-15"), dateTime, Guid.Empty, typeId2, OperationType.Expense);
+            FinancialOperation financialOperation3 = new FinancialOperation(Guid.NewGuid(), "test3", 14, DateTime.Parse("2023-04-30"), dateTime, typeId2, Guid.Empty, OperationType.Income);
+            FinancialOperation financialOperation4 = new FinancialOperation(Guid.NewGuid(), "test4", 2, DateTime.Parse("2023-05-01"), dateTime, typeId2, Guid.Empty, OperationType.Income);
             await _appDBContext.FinancialOperations.AddRangeAsync(financialOperation, financialOperation2, financialOperation3, financialOperation4);
             await _appDBContext.SaveChangesAsync();
 
@@ -234,8 +234,8 @@ namespace Task12.Tests
             Assert.Multiple(() =>
             {
                 Assert.That(response.StatusCode, Is.EqualTo(200));
-                Assert.That(((PeriodReportResponse)response.Value).DateStart, Is.EqualTo(DateOnly.Parse("2023-04-01")));
-                Assert.That(((PeriodReportResponse)response.Value).DateEnd, Is.EqualTo(DateOnly.Parse("2023-04-30")));
+                Assert.That(((PeriodReportResponse)response.Value).DateStart, Is.EqualTo(DateTime.Parse("2023-04-01")));
+                Assert.That(((PeriodReportResponse)response.Value).DateEnd, Is.EqualTo(DateTime.Parse("2023-04-30")));
                 Assert.That(((PeriodReportResponse)response.Value).TotalExpense, Is.EqualTo(27.5m));
                 Assert.That(((PeriodReportResponse)response.Value).TotalIncome, Is.EqualTo(14));
             });

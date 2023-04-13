@@ -15,6 +15,7 @@ namespace BlazorClient.Models
             LastModified = op.LastModified;
             Amount = op.Amount;
             TypeName = String.Empty;
+            OpType = op.OpType;
         }
     }
 }

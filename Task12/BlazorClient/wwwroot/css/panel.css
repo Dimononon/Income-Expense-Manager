@@ -5,11 +5,20 @@
     flex-wrap: wrap;
     max-width: 60%;
     font-family: sans-serif;
+    border-right: 2px solid #000;
+}
+.tabss {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 40%;
+    font-family: sans-serif;
+    padding:0 0 0 5px;
 }
 
 .tabs__label {
     padding: 10px 16px;
     cursor: pointer;
+    height: 45px;
 }
 
 .tabs__radio {
@@ -31,6 +40,19 @@
     border-bottom: 2px solid #000;
 }
 
-    .tabs__radio:checked + .tabs__label + .tabs__content {
-        display: initial;
-    }
+.tabs__radio:checked + .tabs__label + .tabs__content {
+    display: initial;
+}
+#container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+#leftThing {
+    width: 60%;
+}
+
+#rightThing {
+    width: 40%;
+}

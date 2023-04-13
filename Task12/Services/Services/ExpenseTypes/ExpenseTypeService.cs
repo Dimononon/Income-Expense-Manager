@@ -18,9 +18,11 @@ namespace Task12.Services.ExpenseTypes
         }
         public async Task<bool> UpdateExpenseType(ExpenseType expenseType)
         {
-            if (await _dbContext.Incomes.FindAsync(Guid.Parse(expenseType.Id.ToString())) != null)
+            ExpenseType existedInstanse = await _dbContext.Expenses.FindAsync(Guid.Parse(expenseType.Id.ToString()));
+            if (existedInstanse != null)
             {
-                _dbContext.Expenses.Update(expenseType);
+
+                _dbContext.Entry(existedInstanse).CurrentValues.SetValues(expenseType);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
@@ -38,6 +40,7 @@ namespace Task12.Services.ExpenseTypes
             if (type != null)
             {
                 _dbContext.Expenses.Remove(type);
+                await _dbContext.SaveChangesAsync();
             }
             else
             {

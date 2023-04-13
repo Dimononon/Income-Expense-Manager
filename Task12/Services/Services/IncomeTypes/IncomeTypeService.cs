@@ -18,9 +18,10 @@ namespace Task12.Services.IncomeTypes
         }
         public async Task<bool> UpdateIncomeType(IncomeType incomeType)
         {
-            if (await _dbContext.Incomes.FindAsync(Guid.Parse(incomeType.Id.ToString())) != null)
+            var existedInstance = await _dbContext.Incomes.FindAsync(Guid.Parse(incomeType.Id.ToString()));
+            if ( existedInstance!= null)
             {
-                _dbContext.Incomes.Update(incomeType);
+                _dbContext.Entry(existedInstance).CurrentValues.SetValues(incomeType);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
@@ -38,6 +39,7 @@ namespace Task12.Services.IncomeTypes
             if (type != null)
             {
                 _dbContext.Incomes.Remove(type);
+                await _dbContext.SaveChangesAsync();
             }
             else
             {

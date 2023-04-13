@@ -6,6 +6,7 @@ namespace Task12.Models
     {
         [Key]
         public Guid Id { get; set; }
+        [Required(ErrorMessage = "Please input name")]
         public string Name { get; set; }
         public DateTime LastModified { get; set; }
         public IncomeType(Guid id, string name, DateTime lastModified)

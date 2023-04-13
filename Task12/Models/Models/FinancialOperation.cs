@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Task12.Models
@@ -19,6 +20,7 @@ namespace Task12.Models
         public Guid IncomeTypeId { get; set;  }
         [Required]
         public Guid ExpenseTypeId { get; set;  }
+        public OperationType OpType { get; set; }
         public FinancialOperation()
         {
             Id = Guid.NewGuid();
@@ -29,7 +31,7 @@ namespace Task12.Models
             IncomeTypeId = Guid.Empty;
             ExpenseTypeId = Guid.Empty;
         }
-        public FinancialOperation(Guid id, string name, decimal amount, DateTime date, DateTime lm, Guid incomeTypeId, Guid expenseTypeId)
+        public FinancialOperation(Guid id, string name, decimal amount, DateTime date, DateTime lm, Guid incomeTypeId, Guid expenseTypeId, OperationType operationType)
         {
             Id = id;
             Name = name;
@@ -38,6 +40,7 @@ namespace Task12.Models
             LastModified = lm;
             IncomeTypeId = incomeTypeId;
             ExpenseTypeId = expenseTypeId;
+            OpType = operationType;
         }
     }
 }
