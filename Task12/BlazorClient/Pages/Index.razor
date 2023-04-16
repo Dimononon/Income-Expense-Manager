@@ -3,13 +3,13 @@
 @using Microsoft.AspNetCore.Mvc
 @using Task12.API.Reports
 @using BlazorClient.Services;
+@using BlazorPro.Spinkit
 @inject IFinanceService financeService;
 @inject IExpenseTypeService expenseTypeService;
 @inject IIncomeTypeService incomeTypeService;
 @inject IPrivatbankAPI privatBankService;
 
 <div id="container">
-
     <div class="tabs" id="leftThing">
         <input type="radio" class="tabs__radio" name="tabs-main" id="tab1" checked="@IsExpenseChecked" @onchange="() => { IsExpenseChecked = true; IsIncomeChecked = false; }">
         <label for="tab1" class="tabs__label">Expense</label>
@@ -189,7 +189,6 @@
             <h2 style="display:inline-block">Your Balance @balance </h2>
             <div style="display:inline-block">
                 <EditForm Model="chosenCurrency">
-
                     <InputSelect @bind-Value="@chosenCurrency.Name" class="form-control"
                                  @oninput="OnValueChanged">
                         @foreach (var currency in exchangeRates)
@@ -198,7 +197,6 @@
                         }
                     </InputSelect>
                 </EditForm>
-
             </div>
             <table class="table table-striped">
                 <thead class="table-dark">
@@ -244,8 +242,11 @@
         </div>
     </div>
 </div>
+<SpinLoader IsLoading=@IsLoading Spinner="SpinnerType.Chase">
 
+</SpinLoader>
 @code {
+    private bool IsLoading { get; set; }
     private bool IsExpenseChecked = true;
     private bool IsIncomeChecked = false;
     private bool IsExpenseTypeChecked = true;
@@ -267,6 +268,7 @@
     private IncomeType incomeType = new();
     protected override async Task OnInitializedAsync()
     {
+        IsLoading = true;
         await GetFinancialOperations();
         await GetExpenseTypes();
         await GetIncomeTypes();
@@ -276,6 +278,7 @@
         {
             op.AmountIn = String.Format("{0:0.00}", op.Amount ) + " UAH";
         }
+        IsLoading = false;
     }
     private async Task CreateExpenseOperation()
     {
@@ -470,7 +473,7 @@
         await incomeTypeService.DeleteIncome(guid);
         await GetIncomeTypes();
     }
-    private async Task OnValueChanged(ChangeEventArgs args)
+    private void OnValueChanged(ChangeEventArgs args)
     {
         currency = args.Value.ToString();
         ChangeCurrency();
