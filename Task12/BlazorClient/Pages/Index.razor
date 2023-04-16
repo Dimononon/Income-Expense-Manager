@@ -299,12 +299,12 @@
     {
         if (isNewIncome)
         {
-            await financeService.CreateIncome(incomeOperation);
+            await financeService.CreateIncome(incomeOperation.ToFinancialOperation(exchangeRates));
             await GetFinancialOperations();
         }
         else
         {
-            await financeService.UpdateIncome(incomeOperation.Id, incomeOperation);
+            await financeService.UpdateIncome(incomeOperation.Id, incomeOperation.ToFinancialOperation(exchangeRates));
             isNewIncome = true;
             await GetFinancialOperations();
         }
