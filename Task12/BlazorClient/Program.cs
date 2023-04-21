@@ -4,16 +4,23 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System.Configuration;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using BlazorClient.Authentication;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAuthenticationCore();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<IFinanceService, FinanceService>();
 builder.Services.AddSingleton<IExpenseTypeService, ExpenseTypeService>();
 builder.Services.AddSingleton<IIncomeTypeService, IncomeTypeService>();
 builder.Services.AddSingleton<IPrivatbankAPI, PrivatbankAPI>();
+builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<ProtectedSessionStorage>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddHttpClient();
 
 var app = builder.Build();

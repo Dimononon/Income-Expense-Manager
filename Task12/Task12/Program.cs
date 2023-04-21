@@ -6,6 +6,7 @@ using Task12.Services.Incomes;
 using Task12.Services.IncomeTypes;
 using Task12.Services.Reports;
 using Task12.Middleware;
+using Services.Services.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,7 @@ builder.Services.AddTransient<IIncomeService, IncomeService>();
 builder.Services.AddTransient<IIncomeTypeService, IncomeTypeService>();
 builder.Services.AddTransient<IExpenseTypeService, ExpenseTypeService>();
 builder.Services.AddTransient<IReportService, ReportService>();
+builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("AppDBConnection")));
 var app = builder.Build();

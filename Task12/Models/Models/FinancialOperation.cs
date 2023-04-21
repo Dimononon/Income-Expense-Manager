@@ -9,6 +9,7 @@ namespace Task12.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
+        public Guid UserId { get; set; }
         [Required(ErrorMessage ="Please input name of operation")]
         public string Name { get; set; }
         [Required(ErrorMessage ="Please input amount")]

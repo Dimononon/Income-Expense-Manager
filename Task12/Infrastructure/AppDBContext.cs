@@ -12,5 +12,6 @@ namespace Task12
         public DbSet<FinancialOperation> FinancialOperations { get; set; }
         public DbSet<ExpenseType> Expenses { get; set; }
         public DbSet<IncomeType> Incomes { get; set; }
+        public DbSet<UserAccount> UserAccounts { get; set; }
     }
 }
