@@ -9,10 +9,10 @@ namespace Task12.Services.Reports
         {
             _dbContext = dbContext;
         }
-        public DailyReport GetDailyReport(DateOnly date)
+        public DailyReport GetDailyReport(DateOnly date, Guid userId)
         {
             DateTime dt = date.ToDateTime(TimeOnly.MinValue).Date;
-            List<FinancialOperation> operations = _dbContext.FinancialOperations.Where(o => o.DT.Date == dt).ToList();
+            List<FinancialOperation> operations = _dbContext.FinancialOperations.Where(o => o.UserId == userId && o.DT.Date == dt).ToList();
             decimal totalIncome = 0;
             decimal totalExpense = 0;
             foreach (var operation in operations)
@@ -28,11 +28,11 @@ namespace Task12.Services.Reports
             }
             return new DailyReport(date, totalIncome, totalExpense, operations);
         }
-        public PeriodReport GetPeriodReport(DateOnly dateStart, DateOnly dateEnd)
+        public PeriodReport GetPeriodReport(DateOnly dateStart, DateOnly dateEnd, Guid userId)
         {
             DateTime dateS = dateStart.ToDateTime(TimeOnly.MinValue).Date;
             DateTime dateE = dateEnd.ToDateTime(TimeOnly.MinValue).Date;
-            List<FinancialOperation> operations = _dbContext.FinancialOperations.Where(o => o.DT.Date >= dateS && o.DT.Date <= dateE).ToList();
+            List<FinancialOperation> operations = _dbContext.FinancialOperations.Where(o => o.UserId == userId && o.DT.Date >= dateS && o.DT.Date <= dateE).ToList();
             decimal totalIncome = 0;
             decimal totalExpense = 0;
             foreach (var operation in operations)

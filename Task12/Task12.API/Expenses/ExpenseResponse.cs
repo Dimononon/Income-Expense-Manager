@@ -7,6 +7,6 @@ using Task12.Models;
 
 namespace Task12.API.Expenses
 {
-    public record ExpenseResponse(Guid Id, string Name, DateTime DateTime, DateTime LastModified, Guid TypeId, decimal Amount, OperationType Type);
+    public record ExpenseResponse(Guid Id, Guid UserId,string Name, DateTime DateTime, DateTime LastModified, Guid TypeId, decimal Amount, OperationType Type);
 
 }

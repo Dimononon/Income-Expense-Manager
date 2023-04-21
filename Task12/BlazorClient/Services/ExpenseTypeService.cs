@@ -17,7 +17,7 @@ namespace BlazorClient.Services
         }
         public async Task<ExpenseTypeResponse> CreateExpenseType(ExpenseType expenseType)
         {
-            var request = new CreateExpenseTypeRequest(expenseType.Name);
+            var request = new CreateExpenseTypeRequest(expenseType.UserId, expenseType.Name);
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync($"{_baseUrl}/ExpenseType", content);
@@ -45,7 +45,7 @@ namespace BlazorClient.Services
 
         public async Task UpdateExpenseType(Guid id, ExpenseType expenseType)
         {
-            var request = new UpsertExpenseTypeRequest(expenseType.Name);
+            var request = new UpsertExpenseTypeRequest(expenseType.UserId, expenseType.Name);
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"{_baseUrl}/ExpenseType/{id}", content);

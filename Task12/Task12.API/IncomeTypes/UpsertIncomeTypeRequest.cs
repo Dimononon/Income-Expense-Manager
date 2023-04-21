@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace Task12.API.IncomeTypes
 {
-    public record UpsertIncomeTypeRequest(string Name);
+    public record UpsertIncomeTypeRequest(Guid UserId,string Name);
    
 }

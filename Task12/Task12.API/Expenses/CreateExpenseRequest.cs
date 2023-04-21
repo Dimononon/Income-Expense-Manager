@@ -7,5 +7,5 @@ using Task12.Models;
 
 namespace Task12.API.Expenses
 {
-    public record CreateExpenseRequest(string Name, DateTime DateTime, Guid TypeId, decimal Amount);
+    public record CreateExpenseRequest(Guid UserId, string Name, DateTime DateTime, Guid TypeId, decimal Amount);
 }

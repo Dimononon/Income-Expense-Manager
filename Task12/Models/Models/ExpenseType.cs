@@ -6,14 +6,16 @@ namespace Task12.Models
     {
         [Key]
         public Guid Id { get; set; }
+        [Required]
         public Guid UserId { get; set; }
 
         [Required(ErrorMessage = "Please input name")]
         public string Name { get; set; }
         public DateTime LastModified { get; set; }
-        public ExpenseType(Guid id, string name, DateTime lastModified)
+        public ExpenseType(Guid id, Guid userId,string name, DateTime lastModified)
         {
             Id = id;
+            UserId = userId;
             Name = name;
             LastModified = lastModified;
         }

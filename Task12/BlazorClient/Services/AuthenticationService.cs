@@ -10,10 +10,10 @@ namespace BlazorClient.Services
     {
         private readonly HttpClient _httpClient;
         private readonly string _baseUrl;
-        public AuthenticationService(HttpClient httpClient, string baseUrl)
+        public AuthenticationService(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
-            _baseUrl = baseUrl;
+            _baseUrl = configuration.GetValue<string>("ApiConnection");
         }
         public async Task<UserResponse> RegistrateUser(UserAccount user)
         {
@@ -70,7 +70,7 @@ namespace BlazorClient.Services
             var request = new ValidateRequest(user.UserName, user.Password);
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync($"{_baseUrl}/Authentication", content);
+            var response = await _httpClient.PostAsync($"{_baseUrl}/Validation", content);
             if (response.IsSuccessStatusCode)
             {
                 return true;

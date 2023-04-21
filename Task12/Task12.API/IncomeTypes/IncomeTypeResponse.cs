@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Task12.API.IncomeTypes
 {
-    public record IncomeTypeResponse(Guid id, string name, DateTime lm);
+    public record IncomeTypeResponse(Guid id, Guid UserId,string name, DateTime lm);
 }

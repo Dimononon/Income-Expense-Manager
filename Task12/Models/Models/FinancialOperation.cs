@@ -9,6 +9,7 @@ namespace Task12.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
+        [Required]
         public Guid UserId { get; set; }
         [Required(ErrorMessage ="Please input name of operation")]
         public string Name { get; set; }
@@ -32,9 +33,10 @@ namespace Task12.Models
             IncomeTypeId = Guid.Empty;
             ExpenseTypeId = Guid.Empty;
         }
-        public FinancialOperation(Guid id, string name, decimal amount, DateTime date, DateTime lm, Guid incomeTypeId, Guid expenseTypeId, OperationType operationType)
+        public FinancialOperation(Guid id, Guid userId, string name, decimal amount, DateTime date, DateTime lm, Guid incomeTypeId, Guid expenseTypeId, OperationType operationType)
         {
             Id = id;
+            UserId = userId;
             Name = name;
             Amount = amount;
             DT = date;

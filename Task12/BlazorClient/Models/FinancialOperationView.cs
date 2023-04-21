@@ -14,6 +14,7 @@ namespace BlazorClient.Models
         public FinancialOperationView(FinancialOperation op)
         {
             Id = op.Id;
+            UserId = op.UserId;
             Name = op.Name;
             ExpenseTypeId = op.ExpenseTypeId;
             IncomeTypeId = op.IncomeTypeId;
@@ -39,6 +40,7 @@ namespace BlazorClient.Models
             return new FinancialOperation
             {
                 Id = Id,
+                UserId = UserId,
                 Name = Name,
                 ExpenseTypeId = ExpenseTypeId,
                 IncomeTypeId = IncomeTypeId,

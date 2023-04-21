@@ -14,7 +14,7 @@ namespace BlazorClient.Services
         Task<DailyReportResponse> GetDailyReport(DateTime date);
         Task<ExpenseResponse> GetExpense(Guid id);
         Task<IncomeResponse> GetIncome(Guid id);
-        Task<PeriodReportResponse> GetPeriodReport(DateTime start, DateTime end);
+        Task<PeriodReportResponse> GetPeriodReport(DateTime start, DateTime end, Guid userId);
         Task UpdateExpense(Guid id, FinancialOperation model);
         Task UpdateIncome(Guid id, FinancialOperation model);
     }

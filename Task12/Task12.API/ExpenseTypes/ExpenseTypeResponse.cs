@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Task12.API.ExpenseTypes
 {
-    public record ExpenseTypeResponse(Guid Id, string Name, DateTime LastModified);
+    public record ExpenseTypeResponse(Guid Id, Guid UserId, string Name, DateTime LastModified);
 }

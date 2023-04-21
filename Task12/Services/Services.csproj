@@ -12,8 +12,4 @@
     <ProjectReference Include="..\Task12.API\Task12.API.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Authentication\" />
-  </ItemGroup>
-
 </Project>

@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace Task12.API.ExpenseTypes
 {
-    public record CreateExpenseTypeRequest(string Name);
+    public record CreateExpenseTypeRequest(Guid UserId,string Name);
     
 }

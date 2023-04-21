@@ -30,7 +30,14 @@ namespace Task12.Controllers
             var response = new UserResponse(user.Id, user.UserName, user.Role);
             return Ok(response);
         }
-        [HttpPost()]
+        [HttpGet("{name}")]
+        public async Task<IActionResult> GetUser(string name)
+        {
+            var user = await _authenticationService.GetUser(name);
+            var response = new UserResponse(user.Id, user.UserName, user.Role);
+            return Ok(response);
+        }
+        [HttpPost("/Validation")]
         public async Task<IActionResult> ValidateUser(ValidateRequest request)
         {
             UserAccount user = await _authenticationService.GetUser(request.UserName);

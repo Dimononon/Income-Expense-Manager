@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Task12.API.Incomes
 {
-    public record UpsertIncomeRequest(string Name, DateTime DateTime, DateTime LastModified, Guid TypeId, decimal Amount);
+    public record UpsertIncomeRequest(Guid UserId, string Name, DateTime DateTime, DateTime LastModified, Guid TypeId, decimal Amount);
 }

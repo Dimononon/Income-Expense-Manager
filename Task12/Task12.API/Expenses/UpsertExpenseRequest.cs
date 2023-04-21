@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Task12.API.Expenses
 {
-    public record UpsertExpenseRequest(string Name, DateTime DateTime, DateTime LastModified, Guid TypeId, decimal Amount);
+    public record UpsertExpenseRequest(Guid UserId,string Name, DateTime DateTime, DateTime LastModified, Guid TypeId, decimal Amount);
 }

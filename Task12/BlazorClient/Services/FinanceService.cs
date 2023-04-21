@@ -20,7 +20,7 @@ namespace BlazorClient.Services
 
         public async Task<ExpenseResponse> CreateExpense(FinancialOperation model)
         {
-            var request = new CreateExpenseRequest(model.Name, model.DT, model.ExpenseTypeId, model.Amount);
+            var request = new CreateExpenseRequest(model.UserId, model.Name, model.DT, model.ExpenseTypeId, model.Amount);
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync($"{_baseUrl}/expense", content);
@@ -39,7 +39,7 @@ namespace BlazorClient.Services
 
         public async Task UpdateExpense(Guid id, FinancialOperation model)
         {
-            var request = new UpsertExpenseRequest(model.Name, model.DT, DateTime.UtcNow, model.ExpenseTypeId, model.Amount);
+            var request = new UpsertExpenseRequest(model.UserId,model.Name, model.DT, DateTime.UtcNow, model.ExpenseTypeId, model.Amount);
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"{_baseUrl}/expense/{id}", content);
@@ -54,7 +54,7 @@ namespace BlazorClient.Services
 
         public async Task<IncomeResponse> CreateIncome(FinancialOperation model)
         {
-            var request = new CreateIncomeRequest(model.Name, model.DT, model.IncomeTypeId, model.Amount);
+            var request = new CreateIncomeRequest(model.UserId,model.Name, model.DT, model.IncomeTypeId, model.Amount);
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync($"{_baseUrl}/income", content);
@@ -73,7 +73,7 @@ namespace BlazorClient.Services
 
         public async Task UpdateIncome(Guid id, FinancialOperation model)
         {
-            var request = new UpsertIncomeRequest(model.Name, model.DT, DateTime.UtcNow, model.IncomeTypeId, model.Amount);
+            var request = new UpsertIncomeRequest(model.UserId, model.Name, model.DT, DateTime.UtcNow, model.IncomeTypeId, model.Amount);
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"{_baseUrl}/income/{id}", content);
@@ -85,9 +85,9 @@ namespace BlazorClient.Services
             var response = await _httpClient.DeleteAsync($"{_baseUrl}/income/{id}");
             response.EnsureSuccessStatusCode();
         }
-        public async Task<PeriodReportResponse> GetPeriodReport(DateTime start, DateTime end)
+        public async Task<PeriodReportResponse> GetPeriodReport(DateTime start, DateTime end, Guid userId)
         {
-            var response = await _httpClient.GetAsync($"{_baseUrl}/periodreport?dateStart={start:s}&dateEnd={end:s}");
+            var response = await _httpClient.GetAsync($"{_baseUrl}/periodreport?dateStart={start:s}&dateEnd={end:s}&userid={userId}");
             response.EnsureSuccessStatusCode();
             var responseString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<PeriodReportResponse>(responseString);

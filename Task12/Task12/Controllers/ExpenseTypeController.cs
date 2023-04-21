@@ -17,9 +17,9 @@ namespace Task12.Controllers
         [HttpPost()]
         public async Task<IActionResult> CreateExpenseType(CreateExpenseTypeRequest request)
         {
-            var type = new ExpenseType(Guid.NewGuid(), request.Name, DateTime.UtcNow);
+            var type = new ExpenseType(Guid.NewGuid(),request.UserId, request.Name, DateTime.UtcNow);
             await _expenseTypeService.CreateExpenseType(type);
-            var response = new ExpenseTypeResponse(type.Id, type.Name, type.LastModified);
+            var response = new ExpenseTypeResponse(type.Id, type.UserId, type.Name, type.LastModified);
 
             return CreatedAtAction(nameof(GetExpenseType), new { id = type.Id }, response);
         }
@@ -27,13 +27,13 @@ namespace Task12.Controllers
         public async Task<IActionResult> GetExpenseType(Guid id)
         {
             var type = await _expenseTypeService.GetExpenseType(id);
-            var response = new ExpenseTypeResponse(type.Id, type.Name, type.LastModified);
+            var response = new ExpenseTypeResponse(type.Id, type.UserId, type.Name, type.LastModified);
             return Ok(response);
         }
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpsertExpenseType(Guid id, UpsertExpenseTypeRequest request)
         {
-            var type = new ExpenseType(id, request.Name, DateTime.UtcNow);
+            var type = new ExpenseType(id, request.UserId, request.Name, DateTime.UtcNow);
             if (await _expenseTypeService.UpdateExpenseType(type))
             {
                 return Ok();

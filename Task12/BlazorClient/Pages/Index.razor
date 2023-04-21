@@ -8,6 +8,7 @@
 @inject IExpenseTypeService expenseTypeService;
 @inject IIncomeTypeService incomeTypeService;
 @inject IPrivatbankAPI privatBankService;
+@inject IAuthenticationService authenticationService;
 @inject IJSRuntime js;
 
 <AuthorizeView>
@@ -15,248 +16,251 @@
         <h1>Please Register or Login</h1>
     </NotAuthorized>
     <Authorized>
-        <h3>Hello, @context.User.Identity.Name!</h3>
-        <div id="container">
-            <div class="tabs" id="leftThing">
-                <input type="radio" class="tabs__radio" name="tabs-main" id="tab1" checked="@IsExpenseChecked" @onchange="() => { IsExpenseChecked = true; IsIncomeChecked = false; }">
-                <label for="tab1" class="tabs__label">Expense</label>
-                <div class="tabs__content">
-                    <EditForm Model="@expenseOperation" OnValidSubmit="CreateExpenseOperation">
-                        <DataAnnotationsValidator />
-                        <div>
-                            <label for="name">Name</label>
-                            <InputText id="name" @bind-Value="expenseOperation.Name" class="form-control" />
-                        </div>
-                        <div style="width:93%; display:inline-block">
-                            <label for="amount">Amount</label>
-                            <InputNumber id="amount" @bind-Value="expenseOperation.Amount" class="form-control" />
-                        </div>
-                        <div style="width:auto; display:inline-block">
-                            <label for="currency">Currency</label>
-                            <InputSelect id="currency" @bind-Value="expenseOperation.Currency" class="form-control">
-                                @foreach (var currency in exchangeRates)
-                                {
-                                    <option value="@currency.currency">@currency.currency</option>
-                                }
-                            </InputSelect>
-                        </div>
-                        <div>
-                            <label for="expenseType">Type</label>
-                            <InputSelect id="expenseType" @bind-Value="expenseOperation.ExpenseTypeId" class="form-control">
-                                @foreach (var expense in expenseTypes)
-                                {
-                                    <option value="@expense.Id">@expense.Name</option>
-                                }
-                            </InputSelect>
-                        </div>
-                        <div>
-                            <label for="datetime">Date and Time:</label>
-                            <input type="datetime-local" step="1" id="datetime" name="datetime" @bind-value="expenseOperation.DT" class="form-control" />
-                        </div>
-                        <ValidationSummary />
-                        <button type="submit" class="btn-outline-dark">Submit</button>
-                    </EditForm>
-                </div>
-                <input type="radio" class="tabs__radio" name="tabs-main" id="tab2" checked="@IsIncomeChecked" @onchange="() => { IsExpenseChecked = false; IsIncomeChecked = true; }">
-                <label for="tab2" class="tabs__label">Income</label>
-                <div class="tabs__content">
-                    <EditForm Model="@incomeOperation" OnValidSubmit="CreateIncomeOperation">
-                        <DataAnnotationsValidator />
-                        <div>
-                            <label for="name">Name</label>
-                            <InputText id="name" @bind-Value="incomeOperation.Name" class="form-control" />
-                        </div>
-                        <div style="width:93%; display:inline-block">
-                            <label for="amount">Amount</label>
-                            <InputNumber id="amount" @bind-Value="incomeOperation.Amount" class="form-control" />
-                        </div>
-                        <div style="width:auto; display:inline-block">
-                            <label for="currency">Currency</label>
-                            <InputSelect id="currency" @bind-Value="incomeOperation.Currency" class="form-control">
-                                @foreach (var currency in exchangeRates)
-                                {
-                                    <option value="@currency.currency">@currency.currency</option>
-                                }
-                            </InputSelect>
-                        </div>
-                        <div>
-                            <label for="incomeType">Type</label>
-                            <InputSelect id="incomeType" @bind-Value="incomeOperation.IncomeTypeId" class="form-control">
-                                @foreach (var income in incomeTypes)
-                                {
-                                    <option value="@income.Id">@income.Name</option>
-                                }
-                            </InputSelect>
-                        </div>
-                        <div>
-                            <label for="datetime">Date and Time:</label>
-                            <input type="datetime-local" step="1" id="datetime" name="datetime" @bind-value="incomeOperation.DT" class="form-control" />
-                        </div>
-                        <ValidationSummary />
-                        <button type="submit" class="btn-outline-dark">Submit</button>
-                    </EditForm>
-                </div>
-            </div>
-            <div class="tabss" id="rightThing">
-                <input type="radio" class="tabs__radio" name="tabs-second" id="tab11" checked="@IsExpenseTypeChecked" @onchange="() => { IsExpenseTypeChecked = true; IsIncomeTypeChecked = false; }">
-                <label for="tab11" class="tabs__label">Expense Type</label>
-                <div class="tabs__content">
-                    <div>
-                        <EditForm Model="@expenseType" OnValidSubmit="@CreateExpenseType">
-                            <DataAnnotationsValidator />
-                            <div>
-                                <label for="expenseTypename">Name</label>
-                                <InputText id="expenseTypename" @bind-Value="expenseType.Name" class="form-control" />
-                            </div>
-                            <ValidationSummary />
-                            <button type="submit" class="btn-outline-dark">Submit</button>
-                        </EditForm>
-                    </div>
-                    <div>
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col">
-                                    <div style="height: 200px; overflow:auto;">
-
-                                        <table class="table table-striped">
-                                            @foreach (ExpenseType ext in expenseTypes)
-                                            {
-                                                <tbody>
-                                                    <tr>
-
-                                                        <td>
-                                                            @ext.Name
-                                                        </td>
-                                                        <td width="50">
-                                                            <button class="btn btn-outline-dark" @onclick="(()=>EditExpenseType(ext.Id))" style="width=50px;">Edit</button>
-                                                        </td>
-                                                        <td width="50">
-                                                            <button class="btn btn-outline-dark" @onclick="(()=>DeleteExpenseType(ext.Id))" style=" width=50px;">Del</button>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            }
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <input type="radio" class="tabs__radio" name="tabs-second" id="tab12" checked="@IsIncomeTypeChecked" @onchange="() => { IsExpenseTypeChecked = false; IsIncomeTypeChecked = true; }">
-                <label for="tab12" class="tabs__label">Income Type</label>
-                <div class="tabs__content">
-                    <div>
-                        <EditForm Model="@incomeType" OnValidSubmit="@CreateIncomeType">
-                            <DataAnnotationsValidator />
-                            <div>
-                                <label for="incomeTypeName">Name</label>
-                                <InputText id="incomeTypeName" @bind-Value="incomeType.Name" class="form-control" />
-                            </div>
-                            <ValidationSummary />
-                            <button type="submit" class="btn-outline-dark">Submit</button>
-                        </EditForm>
-                    </div>
-                    <div>
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col">
-                                    <div style="height: 200px; overflow:auto;">
-
-                                        <table class="table table-striped">
-                                            @foreach (var ext in incomeTypes)
-                                            {
-                                                <tbody>
-                                                    <tr>
-
-                                                        <td>
-                                                            @ext.Name
-                                                        </td>
-                                                        <td width="50">
-                                                            <button class="btn btn-outline-dark" @onclick="(()=>EditIncomeType(ext.Id))" style="width=50px;">Edit</button>
-                                                        </td>
-                                                        <td width="50">
-                                                            <button class="btn btn-outline-dark" @onclick="(()=>DeleteIncomeType(ext.Id))" style=" width=50px;">Del</button>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            }
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <h2 style="display:inline-block">Your Balance @balance </h2>
-                    <div style="display:inline-block">
-                        <EditForm Model="chosenCurrency">
-                            <InputSelect @bind-Value="@chosenCurrency.Name" class="form-control"
-                                         @oninput="OnValueChanged">
-                                @foreach (var currency in exchangeRates)
-                                {
-                                    <option value="@currency.currency">@currency.currency</option>
-                                }
-                            </InputSelect>
-                        </EditForm>
-                    </div>
-                    <table class="table table-striped">
-                        <thead class="table-dark">
-                            <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Amount</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Type Name</th>
-                                <th scope="col">Date/Time</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        @foreach (var op in operations)
-                        {
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        @op.Name
-                                    </td>
-                                    <td>
-                                        @op.AmountIn
-                                    </td>
-                                    <td>
-                                        @GetType(op)
-                                    </td>
-                                    <td>
-                                        @op.TypeName
-                                    </td>
-                                    <td>
-                                        @op.DT
-                                    </td>
-                                    <td width="50px">
-                                        <button class="btn btn-outline-dark" @onclick="(()=> EditOperation(op.Id, op.OpType==OperationType.Expense))">Edit</button>
-                                    </td>
-                                    <td width="50px">
-                                        <button class="btn btn-outline-dark" @onclick="(()=> DeleteOperation(op.Id, op.OpType==OperationType.Expense))">Del</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        }
-                    </table>
-                </div>
-            </div>
-        </div>
+        <h3>Hello, @context.User.Identity.Name! @CurrentUserId</h3>
     </Authorized>
 </AuthorizeView>
+<div id="container">
+    <div class="tabs" id="leftThing">
+        <input type="radio" class="tabs__radio" name="tabs-main" id="tab1" checked="@IsExpenseChecked" @onchange="() => { IsExpenseChecked = true; IsIncomeChecked = false; }">
+        <label for="tab1" class="tabs__label">Expense</label>
+        <div class="tabs__content">
+            <EditForm Model="@expenseOperation" OnValidSubmit="CreateExpenseOperation">
+
+                <DataAnnotationsValidator />
+                <div>
+                    <label for="name">Name</label>
+                    <InputText id="name" @bind-Value="expenseOperation.Name" class="form-control" />
+                </div>
+                <div style="width:93%; display:inline-block">
+                    <label for="amount">Amount</label>
+                    <InputNumber id="amount" @bind-Value="expenseOperation.Amount" class="form-control" />
+                </div>
+                <div style="width:auto; display:inline-block">
+                    <label for="currency">Currency</label>
+                    <InputSelect id="currency" @bind-Value="expenseOperation.Currency" class="form-control">
+                        @foreach (var currency in exchangeRates)
+                        {
+                            <option value="@currency.currency">@currency.currency</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div>
+                    <label for="expenseType">Type</label>
+                    <InputSelect id="expenseType" @bind-Value="expenseOperation.ExpenseTypeId" class="form-control">
+                        @foreach (var expense in expenseTypes)
+                        {
+                            <option value="@expense.Id">@expense.Name</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div>
+                    <label for="datetime">Date and Time:</label>
+                    <input type="datetime-local" step="1" id="datetime" name="datetime" @bind-value="expenseOperation.DT" class="form-control" />
+                </div>
+                <ValidationSummary />
+                <button type="submit" class="btn-outline-dark">Submit</button>
+            </EditForm>
+        </div>
+        <input type="radio" class="tabs__radio" name="tabs-main" id="tab2" checked="@IsIncomeChecked" @onchange="() => { IsExpenseChecked = false; IsIncomeChecked = true; }">
+        <label for="tab2" class="tabs__label">Income</label>
+        <div class="tabs__content">
+            <EditForm Model="@incomeOperation" OnValidSubmit="CreateIncomeOperation">
+                <DataAnnotationsValidator />
+                <div>
+                    <label for="name">Name</label>
+                    <InputText id="name" @bind-Value="incomeOperation.Name" class="form-control" />
+                </div>
+                <div style="width:93%; display:inline-block">
+                    <label for="amount">Amount</label>
+                    <InputNumber id="amount" @bind-Value="incomeOperation.Amount" class="form-control" />
+                </div>
+                <div style="width:auto; display:inline-block">
+                    <label for="currency">Currency</label>
+                    <InputSelect id="currency" @bind-Value="incomeOperation.Currency" class="form-control">
+                        @foreach (var currency in exchangeRates)
+                        {
+                            <option value="@currency.currency">@currency.currency</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div>
+                    <label for="incomeType">Type</label>
+                    <InputSelect id="incomeType" @bind-Value="incomeOperation.IncomeTypeId" class="form-control">
+                        @foreach (var income in incomeTypes)
+                        {
+                            <option value="@income.Id">@income.Name</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div>
+                    <label for="datetime">Date and Time:</label>
+                    <input type="datetime-local" step="1" id="datetime" name="datetime" @bind-value="incomeOperation.DT" class="form-control" />
+                </div>
+                <ValidationSummary />
+                <button type="submit" class="btn-outline-dark">Submit</button>
+            </EditForm>
+        </div>
+    </div>
+    <div class="tabss" id="rightThing">
+        <input type="radio" class="tabs__radio" name="tabs-second" id="tab11" checked="@IsExpenseTypeChecked" @onchange="() => { IsExpenseTypeChecked = true; IsIncomeTypeChecked = false; }">
+        <label for="tab11" class="tabs__label">Expense Type</label>
+        <div class="tabs__content">
+            <div>
+                <EditForm Model="@expenseType" OnValidSubmit="@CreateExpenseType">
+                    <DataAnnotationsValidator />
+                    <div>
+                        <label for="expenseTypename">Name</label>
+                        <InputText id="expenseTypename" @bind-Value="expenseType.Name" class="form-control" />
+                    </div>
+                    <ValidationSummary />
+                    <button type="submit" class="btn-outline-dark">Submit</button>
+                </EditForm>
+            </div>
+            <div>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col">
+                            <div style="height: 200px; overflow:auto;">
+
+                                <table class="table table-striped">
+                                    @foreach (ExpenseType ext in expenseTypes)
+                                    {
+                                        <tbody>
+                                            <tr>
+
+                                                <td>
+                                                    @ext.Name
+                                                </td>
+                                                <td width="50">
+                                                    <button class="btn btn-outline-dark" @onclick="(()=>EditExpenseType(ext.Id))" style="width=50px;">Edit</button>
+                                                </td>
+                                                <td width="50">
+                                                    <button class="btn btn-outline-dark" @onclick="(()=>DeleteExpenseType(ext.Id))" style=" width=50px;">Del</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="radio" class="tabs__radio" name="tabs-second" id="tab12" checked="@IsIncomeTypeChecked" @onchange="() => { IsExpenseTypeChecked = false; IsIncomeTypeChecked = true; }">
+        <label for="tab12" class="tabs__label">Income Type</label>
+        <div class="tabs__content">
+            <div>
+                <EditForm Model="@incomeType" OnValidSubmit="@CreateIncomeType">
+                    <DataAnnotationsValidator />
+                    <div>
+                        <label for="incomeTypeName">Name</label>
+                        <InputText id="incomeTypeName" @bind-Value="incomeType.Name" class="form-control" />
+                    </div>
+                    <ValidationSummary />
+                    <button type="submit" class="btn-outline-dark">Submit</button>
+                </EditForm>
+            </div>
+            <div>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col">
+                            <div style="height: 200px; overflow:auto;">
+
+                                <table class="table table-striped">
+                                    @foreach (var ext in incomeTypes)
+                                    {
+                                        <tbody>
+                                            <tr>
+
+                                                <td>
+                                                    @ext.Name
+                                                </td>
+                                                <td width="50">
+                                                    <button class="btn btn-outline-dark" @onclick="(()=>EditIncomeType(ext.Id))" style="width=50px;">Edit</button>
+                                                </td>
+                                                <td width="50">
+                                                    <button class="btn btn-outline-dark" @onclick="(()=>DeleteIncomeType(ext.Id))" style=" width=50px;">Del</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h2 style="display:inline-block">Your Balance @balance </h2>
+            <div style="display:inline-block">
+                <EditForm Model="chosenCurrency">
+                    <InputSelect @bind-Value="@chosenCurrency.Name" class="form-control"
+                                 @oninput="OnValueChanged">
+                        @foreach (var currency in exchangeRates)
+                        {
+                            <option value="@currency.currency">@currency.currency</option>
+                        }
+                    </InputSelect>
+                </EditForm>
+            </div>
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Type Name</th>
+                        <th scope="col">Date/Time</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                @foreach (var op in operations)
+                {
+                    <tbody>
+                        <tr>
+                            <td>
+                                @op.Name
+                            </td>
+                            <td>
+                                @op.AmountIn
+                            </td>
+                            <td>
+                                @GetType(op)
+                            </td>
+                            <td>
+                                @op.TypeName
+                            </td>
+                            <td>
+                                @op.DT
+                            </td>
+                            <td width="50px">
+                                <button class="btn btn-outline-dark" @onclick="(()=> EditOperation(op.Id, op.OpType==OperationType.Expense))">Edit</button>
+                            </td>
+                            <td width="50px">
+                                <button class="btn btn-outline-dark" @onclick="(()=> DeleteOperation(op.Id, op.OpType==OperationType.Expense))">Del</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
 <SpinLoader IsLoading=@IsLoading Spinner="SpinnerType.Chase">
 
 </SpinLoader>
 @code {
     [CascadingParameter]
     private Task<AuthenticationState> authenticationState { get; set; }
+    private Guid CurrentUserId = Guid.Empty;
     private bool IsLoading { get; set; }
     private bool IsExpenseChecked = true;
     private bool IsIncomeChecked = false;
@@ -286,6 +290,7 @@
     protected override async Task OnInitializedAsync()
     {
         IsLoading = true;
+        await GetUserId().WaitAsync(TimeSpan.FromSeconds(3));
         await GetFinancialOperations();
         await GetExpenseTypes();
         await GetIncomeTypes();
@@ -296,6 +301,15 @@
             op.AmountIn = String.Format("{0:0.00}", op.Amount) + " UAH";
         }
         IsLoading = false;
+    }
+    private async Task GetUserId()
+    {
+        var authState = await authenticationState;
+        var user = await authenticationService.GetUser(authState.User.Identity.Name);
+        if (user != null)
+        {
+            CurrentUserId = user.Id;
+        }
     }
     private async Task CreateExpenseOperation()
     {
@@ -358,7 +372,7 @@
     private async Task GetFinancialOperations()
     {
         operations.Clear();
-        var periodReportResponse = (await financeService.GetPeriodReport(DateTime.Parse("1000-01-01"), DateTime.Parse("9999-01-01")));
+        var periodReportResponse = (await financeService.GetPeriodReport(DateTime.Parse("1000-01-01"), DateTime.Parse("9999-01-01"), CurrentUserId));
         balanceRaw = periodReportResponse.TotalIncome - periodReportResponse.TotalExpense;
         var ops = periodReportResponse.Operations;
         foreach (var op in ops)
@@ -410,8 +424,9 @@
                 ExpenseTypeId = expenseTypes.Count > 0 ? expenseTypes.First().Id : Guid.Empty,
                 OpType = OperationType.Expense,
                 TypeName = string.Empty,
-                Currency = "UAH"
-
+                Currency = "UAH",
+                UserId = CurrentUserId
+                
             };
         incomeOperation = new FinancialOperationView()
             {
@@ -421,7 +436,8 @@
                 ExpenseTypeId = Guid.Empty,
                 OpType = OperationType.Income,
                 TypeName = string.Empty,
-                Currency = "UAH"
+                Currency = "UAH",
+                UserId = CurrentUserId
             };
     }
 
@@ -433,7 +449,7 @@
             isNewExpense = false;
             isNewIncome = true;
             var response = await financeService.GetExpense(guid);
-            expenseOperation = new(new FinancialOperation(response.Id, response.Name, response.Amount, response.DateTime, response.LastModified, Guid.Empty, response.TypeId, OperationType.Expense));
+            expenseOperation = new(new FinancialOperation(response.Id, CurrentUserId, response.Name, response.Amount, response.DateTime, response.LastModified, Guid.Empty, response.TypeId, OperationType.Expense));
             IsExpenseChecked = true;
             IsIncomeChecked = false;
         }
@@ -443,7 +459,7 @@
             isNewIncome = false;
             isNewExpense = true;
             var response = await financeService.GetIncome(guid);
-            incomeOperation = new(new FinancialOperation(response.id, response.Name, response.Amount, response.DateTime, response.LastModified, response.TypeId, Guid.Empty, OperationType.Income));
+            incomeOperation = new(new FinancialOperation(response.id, CurrentUserId, response.Name, response.Amount, response.DateTime, response.LastModified, response.TypeId, Guid.Empty, OperationType.Income));
             IsIncomeChecked = true;
             IsExpenseChecked = false;
         }
@@ -454,7 +470,7 @@
         isNewExpenseType = false;
         isNewIncomeType = true;
         var response = await expenseTypeService.GetExpenseType(guid);
-        expenseType = new(response.Id, response.Name, response.LastModified);
+        expenseType = new(response.Id, CurrentUserId, response.Name, response.LastModified);
         IsExpenseTypeChecked = true;
         IsIncomeTypeChecked = false;
     }
@@ -464,7 +480,7 @@
         isNewExpenseType = true;
         isNewIncomeType = false;
         var response = await incomeTypeService.GetIncomeType(guid);
-        incomeType = new(response.id, response.name, response.lm);
+        incomeType = new(response.id, CurrentUserId, response.name, response.lm);
         IsExpenseTypeChecked = false;
         IsIncomeTypeChecked = true;
     }

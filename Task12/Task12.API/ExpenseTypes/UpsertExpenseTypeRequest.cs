@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Task12.API.ExpenseTypes
 {
-    public record UpsertExpenseTypeRequest( string Name);
+    public record UpsertExpenseTypeRequest(Guid UserId, string Name);
 }

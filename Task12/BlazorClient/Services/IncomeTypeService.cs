@@ -18,7 +18,7 @@ namespace BlazorClient.Services
         }
         public async Task<IncomeTypeResponse> CreateIncomeType(IncomeType incomeType)
         {
-            var request = new CreateIncomeTypeRequest(incomeType.Name);
+            var request = new CreateIncomeTypeRequest(incomeType.UserId, incomeType.Name);
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync($"{_baseUrl}/IncomeType", content);
@@ -44,7 +44,7 @@ namespace BlazorClient.Services
 
         public async Task UpdateIncomeType(Guid id, IncomeType incomeType)
         {
-            var request = new UpsertIncomeTypeRequest(incomeType.Name);
+            var request = new UpsertIncomeTypeRequest(incomeType.UserId, incomeType.Name);
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"{_baseUrl}/IncomeType/{id}", content);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Task12.API.IncomeTypes
 {
-    public record CreateIncomeTypeRequest(string Name);
+    public record CreateIncomeTypeRequest(Guid UserId,string Name);
 
 
 }

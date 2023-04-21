@@ -11,9 +11,10 @@ namespace Task12.Models
         [Required(ErrorMessage = "Please input name")]
         public string Name { get; set; }
         public DateTime LastModified { get; set; }
-        public IncomeType(Guid id, string name, DateTime lastModified)
+        public IncomeType(Guid id, Guid userid, string name, DateTime lastModified)
         {
             Id = id;
+            UserId = userid;
             Name = name;
             LastModified = lastModified;
         }

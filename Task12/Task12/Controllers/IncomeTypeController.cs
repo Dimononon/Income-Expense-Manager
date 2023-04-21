@@ -17,9 +17,9 @@ namespace Task12.Controllers
         [HttpPost()]
         public async Task<IActionResult> CreateIncomeType(CreateIncomeTypeRequest request)
         {
-            var type = new IncomeType(Guid.NewGuid(), request.Name, DateTime.UtcNow);
+            var type = new IncomeType(Guid.NewGuid(), request.UserId, request.Name, DateTime.UtcNow);
             await _incomeTypeService.CreateIncomeType(type);
-            var response = new IncomeTypeResponse(type.Id, type.Name, type.LastModified);
+            var response = new IncomeTypeResponse(type.Id, type.UserId, type.Name, type.LastModified);
 
             return CreatedAtAction(nameof(GetIncomeType), new { id = type.Id }, response);
         }
@@ -27,13 +27,13 @@ namespace Task12.Controllers
         public async Task<IActionResult> GetIncomeType(Guid id)
         {
                 var type = await _incomeTypeService.GetIncomeType(id);
-                var response = new IncomeTypeResponse(type.Id, type.Name, type.LastModified);
+                var response = new IncomeTypeResponse(type.Id, type.UserId, type.Name, type.LastModified);
                 return Ok(response);
         }
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpsertIncomeType(Guid id, UpsertIncomeTypeRequest request)
         {
-            var type = new IncomeType(id, request.Name, DateTime.UtcNow);
+            var type = new IncomeType(id, request.UserId, request.Name, DateTime.UtcNow);
             
             if(await _incomeTypeService.UpdateIncomeType(type))
             {

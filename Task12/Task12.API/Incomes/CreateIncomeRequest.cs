@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Task12.API.Incomes
 {
-    public record CreateIncomeRequest(string Name, DateTime DateTime, Guid TypeId, decimal Amount);
+    public record CreateIncomeRequest(Guid UserId, string Name, DateTime DateTime, Guid TypeId, decimal Amount);
 }
